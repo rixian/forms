@@ -13,7 +13,6 @@ jobs:
     displayName: Set build number
 
   - template: dotnet.yml
-  - template: expand-template.yml
 
 - job: Linux
   pool:
@@ -23,7 +22,6 @@ jobs:
     clean: true # "all" doesn't work, but "true" does, despite YAML docs
   - template: install-dependencies.yml
   - template: dotnet.yml
-  - template: expand-template.yml
 
 - job: macOS
   pool:
@@ -31,7 +29,6 @@ jobs:
   steps:
   - template: install-dependencies.yml
   - template: dotnet.yml
-  - template: expand-template.yml
 
 - job: WrapUp
   dependsOn:
