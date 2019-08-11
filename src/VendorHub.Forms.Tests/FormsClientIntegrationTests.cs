@@ -5,6 +5,7 @@ using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Authentication;
+using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Rixian.Extensions.Tokens;
 using VendorHub.Forms;
@@ -38,7 +39,7 @@ public class FormsClientIntegrationTests
                 ClientId = "REPLACE_ME",
                 ClientSecret = "REPLACE_ME",
                 Authority = "https://identity.vendorhub.io/",
-                Scope = "vendorhub.forms",
+                Scope = "vendorhub.cloudfs vendorhub.forms",
             })
             .ConfigureHttpClient("tls12");
 
@@ -59,5 +60,31 @@ public class FormsClientIntegrationTests
         httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
         IFormsClient client = new FormsClient(httpClient);
         System.Collections.Generic.ICollection<Form> forms = await client.ListFormsAsync(tenantId).ConfigureAwait(false);
+    }
+
+    [Fact]
+    [Trait("TestCategory", "FailsInCloudTest")]
+    public async System.Threading.Tasks.Task ListForms2Async()
+    {
+        var tenantId = Guid.Parse("REPLACE_ME");
+        var serviceCollection = new ServiceCollection();
+
+        serviceCollection.AddFormsClient("REPLACE_ME", "REPLACE_ME", "vendorhub.forms");
+        ServiceProvider services = serviceCollection.BuildServiceProvider();
+        IFormsClient client = services.GetRequiredService<IFormsClient>();
+        System.Collections.Generic.ICollection<Form> forms = await client.ListFormsAsync(tenantId).ConfigureAwait(false);
+    }
+
+    [Fact]
+    public void ForClient_Created_Success()
+    {
+        Guid tenantId = Guid.Empty; // <-- REPLACE_ME
+        var serviceCollection = new ServiceCollection();
+
+        serviceCollection.AddFormsClient("REPLACE_ME", "REPLACE_ME", "vendorhub.forms");
+        ServiceProvider services = serviceCollection.BuildServiceProvider();
+        IFormsClient client = services.GetRequiredService<IFormsClient>();
+
+        client.Should().NotBeNull();
     }
 }
