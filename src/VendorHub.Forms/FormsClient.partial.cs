@@ -15,7 +15,7 @@ namespace VendorHub.Forms
     public partial class FormsClient : IFormsClient
     {
         /// <inheritdoc/>
-        public async Task<SubmissionDetailed> SubmitFormAsync(Guid tenantId, Guid formId, IDictionary<string, string> fields, IDictionary<string, FileParameter> attachments, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<SubmissionDetailed> SubmitFormAsync(Guid tenantId, Guid formId, IEnumerable<KeyValuePair<string, string>> fields, IEnumerable<KeyValuePair<string, FileParameter>> attachments, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (tenantId == null)
             {

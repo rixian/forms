@@ -22,6 +22,6 @@ namespace VendorHub.Forms
         /// <param name="attachments">The named attchments to include in the form submission.</param>
         /// <param name="cancellationToken">The CancellationToken.</param>
         /// <returns>The submission details.</returns>
-        Task<SubmissionDetailed> SubmitFormAsync(Guid tenantId, Guid formId, IDictionary<string, string> fields, IDictionary<string, FileParameter> attachments, CancellationToken cancellationToken = default(CancellationToken));
+        Task<SubmissionDetailed> SubmitFormAsync(Guid tenantId, Guid formId, IEnumerable<KeyValuePair<string, string>> fields, IEnumerable<KeyValuePair<string, FileParameter>> attachments, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

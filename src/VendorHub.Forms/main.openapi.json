@@ -112,8 +112,10 @@
           "200": {
             "description": "",
             "schema": {
-              "type": "object",
-              "properties": {}
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/webhook"
+              }
             }
           }
         },
@@ -141,13 +143,21 @@
           "200": {
             "description": "",
             "schema": {
-              "type": "object",
-              "properties": {}
+              "$ref": "#/definitions/webhook"
             }
           }
         },
         "summary": "Create Webhook",
-        "operationId": "create-webhook"
+        "operationId": "create-webhook",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/create-webhook-request"
+            }
+          }
+        ]
       }
     },
     "/tenants/{tenantId}/forms/{formId}": {
@@ -261,23 +271,29 @@
         }
       ]
     },
-    "/tenants/{tenantId}/forms/install": {
-      "post": {
-        "responses": {
-          "200": {
-            "description": "",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            }
-          }
-        },
-        "summary": "Install Forms",
-        "operationId": "install-forms"
+    "/tenants/{tenantId}/forms/{formId}/webhooks/{webhookId}": {
+      "delete": {
+        "responses": {},
+        "summary": "Delete Webhook",
+        "operationId": "delete-webhook"
       },
       "parameters": [
         {
           "name": "tenantId",
+          "in": "path",
+          "type": "string",
+          "format": "uuid",
+          "required": true
+        },
+        {
+          "name": "formId",
+          "in": "path",
+          "type": "string",
+          "format": "uuid",
+          "required": true
+        },
+        {
+          "name": "webhookId",
           "in": "path",
           "type": "string",
           "format": "uuid",
@@ -445,6 +461,37 @@
       "required": [
         "name",
         "fields"
+      ]
+    },
+    "create-webhook-request": {
+      "type": "object",
+      "title": "Create Webhook Request",
+      "properties": {
+        "notificationUri": {
+          "type": "string"
+        }
+      }
+    },
+    "webhook": {
+      "type": "object",
+      "title": "Webhook",
+      "properties": {
+        "webhookId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "createdOn": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "notificationUri": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "webhookId",
+        "createdOn",
+        "notificationUri"
       ]
     }
   },
