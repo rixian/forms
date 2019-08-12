@@ -22,11 +22,8 @@
         "parameters": [
           {
             "in": "formData",
-            "name": "",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
+            "name": "fileFoo",
+            "type": "file"
           }
         ]
       },
@@ -35,14 +32,14 @@
           "name": "tenantId",
           "in": "path",
           "type": "string",
-          "format": "guid",
+          "format": "uuid",
           "required": true
         },
         {
           "name": "formId",
           "in": "path",
           "type": "string",
-          "format": "guid",
+          "format": "uuid",
           "required": true
         }
       ],
@@ -83,7 +80,7 @@
           "name": "tenantId",
           "in": "path",
           "type": "string",
-          "format": "guid",
+          "format": "uuid",
           "required": true
         }
       ],
@@ -100,9 +97,6 @@
         "summary": "Create Form",
         "parameters": [
           {
-            "$ref": "#/definitions/create-form-request"
-          },
-          {
             "in": "body",
             "name": "body",
             "schema": {
@@ -118,8 +112,10 @@
           "200": {
             "description": "",
             "schema": {
-              "type": "object",
-              "properties": {}
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/webhook"
+              }
             }
           }
         },
@@ -131,14 +127,14 @@
           "name": "tenantId",
           "in": "path",
           "type": "string",
-          "format": "guid",
+          "format": "uuid",
           "required": true
         },
         {
           "name": "formId",
           "in": "path",
           "type": "string",
-          "format": "guid",
+          "format": "uuid",
           "required": true
         }
       ],
@@ -147,13 +143,21 @@
           "200": {
             "description": "",
             "schema": {
-              "type": "object",
-              "properties": {}
+              "$ref": "#/definitions/webhook"
             }
           }
         },
         "summary": "Create Webhook",
-        "operationId": "create-webhook"
+        "operationId": "create-webhook",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/create-webhook-request"
+            }
+          }
+        ]
       }
     },
     "/tenants/{tenantId}/forms/{formId}": {
@@ -174,14 +178,14 @@
           "name": "tenantId",
           "in": "path",
           "type": "string",
-          "format": "guid",
+          "format": "uuid",
           "required": true
         },
         {
           "name": "formId",
           "in": "path",
           "type": "string",
-          "format": "guid",
+          "format": "uuid",
           "required": true
         }
       ]
@@ -204,21 +208,21 @@
           "name": "tenantId",
           "in": "path",
           "type": "string",
-          "format": "guid",
+          "format": "uuid",
           "required": true
         },
         {
           "name": "formId",
           "in": "path",
           "type": "string",
-          "format": "guid",
+          "format": "uuid",
           "required": true
         },
         {
           "name": "submissionId",
           "in": "path",
           "type": "string",
-          "format": "guid",
+          "format": "uuid",
           "required": true
         }
       ]
@@ -229,7 +233,7 @@
           "200": {
             "description": "",
             "schema": {
-              "type": "object",
+              "type": "file",
               "properties": {}
             }
           }
@@ -242,21 +246,21 @@
           "name": "tenantId",
           "in": "path",
           "type": "string",
-          "format": "guid",
+          "format": "uuid",
           "required": true
         },
         {
           "name": "formId",
           "in": "path",
           "type": "string",
-          "format": "guid",
+          "format": "uuid",
           "required": true
         },
         {
           "name": "submissionId",
           "in": "path",
           "type": "string",
-          "format": "guid",
+          "format": "uuid",
           "required": true
         },
         {
@@ -267,26 +271,32 @@
         }
       ]
     },
-    "/tenants/{tenantId}/forms/install": {
-      "post": {
-        "responses": {
-          "200": {
-            "description": "",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            }
-          }
-        },
-        "summary": "Install Forms",
-        "operationId": "install-forms"
+    "/tenants/{tenantId}/forms/{formId}/webhooks/{webhookId}": {
+      "delete": {
+        "responses": {},
+        "summary": "Delete Webhook",
+        "operationId": "delete-webhook"
       },
       "parameters": [
         {
           "name": "tenantId",
           "in": "path",
           "type": "string",
-          "format": "guid",
+          "format": "uuid",
+          "required": true
+        },
+        {
+          "name": "formId",
+          "in": "path",
+          "type": "string",
+          "format": "uuid",
+          "required": true
+        },
+        {
+          "name": "webhookId",
+          "in": "path",
+          "type": "string",
+          "format": "uuid",
           "required": true
         }
       ]
@@ -299,7 +309,7 @@
       "properties": {
         "formId": {
           "type": "string",
-          "format": "guid"
+          "format": "uuid"
         },
         "name": {
           "type": "string"
@@ -349,28 +359,34 @@
       "properties": {
         "formId": {
           "type": "string",
-          "format": "guid"
+          "format": "uuid"
         },
         "submissionId": {
           "type": "string",
-          "format": "guid"
+          "format": "uuid"
         },
         "submittedOn": {
-          "type": "string"
+          "type": "string",
+          "format": "date-time"
         },
         "fields": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/submission-field"
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
           }
         },
         "attachments": {
-          "type": "array",
-          "items": {
+          "type": "object",
+          "additionalProperties": {
             "$ref": "#/definitions/submission-attachment"
           }
         }
-      }
+      },
+      "required": [
+        "formId",
+        "submissionId",
+        "submittedOn"
+      ]
     },
     "submission-field": {
       "type": "object",
@@ -405,15 +421,11 @@
       "properties": {
         "submissionId": {
           "type": "string",
-          "format": "guid"
+          "format": "uuid"
         },
         "formId": {
           "type": "string",
-          "format": "guid"
-        },
-        "tenantId": {
-          "type": "string",
-          "format": "guid"
+          "format": "uuid"
         },
         "submittedOn": {
           "type": "string",
@@ -425,7 +437,12 @@
         "attachmentCount": {
           "type": "integer"
         }
-      }
+      },
+      "required": [
+        "submissionId",
+        "formId",
+        "submittedOn"
+      ]
     },
     "create-form-request": {
       "type": "object",
@@ -437,22 +454,45 @@
         "fields": {
           "type": "array",
           "items": {
-            "type": "object",
-            "title": "FormField",
-            "properties": {
-              "name": {
-                "type": "string"
-              },
-              "type": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "name"
-            ]
+            "$ref": "#/definitions/form-fields"
           }
         }
+      },
+      "required": [
+        "name",
+        "fields"
+      ]
+    },
+    "create-webhook-request": {
+      "type": "object",
+      "title": "Create Webhook Request",
+      "properties": {
+        "notificationUri": {
+          "type": "string"
+        }
       }
+    },
+    "webhook": {
+      "type": "object",
+      "title": "Webhook",
+      "properties": {
+        "webhookId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "createdOn": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "notificationUri": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "webhookId",
+        "createdOn",
+        "notificationUri"
+      ]
     }
   },
   "parameters": {}

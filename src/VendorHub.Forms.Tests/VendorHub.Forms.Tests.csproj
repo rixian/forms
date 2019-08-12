@@ -25,4 +25,10 @@
     <ProjectReference Include="..\VendorHub.Forms.DependencyInjection\VendorHub.Forms.DependencyInjection.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="350x350.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

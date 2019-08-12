@@ -16,11 +16,6 @@ namespace VendorHub.Forms
     public partial interface IFormsClient
     {
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>Submit Form</summary>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<object> SubmitFormAsync(System.Guid tenantId, System.Guid formId, System.Collections.Generic.IEnumerable<string> unnamed = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-    
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>List Submissions</summary>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Submission>> ListSubmissionsAsync(System.Guid tenantId, System.Guid formId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
@@ -33,17 +28,17 @@ namespace VendorHub.Forms
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>Create Form</summary>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Form> CreateFormAsync(System.Guid tenantId, CreateFormRequest unnamed = null, CreateFormRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<Form> CreateFormAsync(System.Guid tenantId, CreateFormRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>List Webhooks</summary>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<object> ListWebhooksAsync(System.Guid tenantId, System.Guid formId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Webhook>> ListWebhooksAsync(System.Guid tenantId, System.Guid formId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>Create Webhook</summary>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<object> CreateWebhookAsync(System.Guid tenantId, System.Guid formId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<Webhook> CreateWebhookAsync(System.Guid tenantId, System.Guid formId, CreateWebhookRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>Get Form</summary>
@@ -58,12 +53,12 @@ namespace VendorHub.Forms
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>Get Submission Attachment</summary>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<object> GetSubmissionAttachmentAsync(System.Guid tenantId, System.Guid formId, System.Guid submissionId, string attachmentName, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<FileResponse> GetSubmissionAttachmentAsync(System.Guid tenantId, System.Guid formId, System.Guid submissionId, string attachmentName, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>Install Forms</summary>
+        /// <summary>Delete Webhook</summary>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<object> InstallFormsAsync(System.Guid tenantId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task DeleteWebhookAsync(System.Guid tenantId, System.Guid formId, System.Guid webhookId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
     
     }
     
@@ -94,7 +89,7 @@ namespace VendorHub.Forms
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>Submit Form</summary>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<object> SubmitFormAsync(System.Guid tenantId, System.Guid formId, System.Collections.Generic.IEnumerable<string> unnamed = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        protected async System.Threading.Tasks.Task<object> SubmitFormCoreAsync(System.Guid tenantId, System.Guid formId, FileParameter fileFoo = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (tenantId == null)
                 throw new System.ArgumentNullException("tenantId");
@@ -116,9 +111,12 @@ namespace VendorHub.Forms
                     var content_ = new System.Net.Http.MultipartFormDataContent(boundary_);
                     content_.Headers.Remove("Content-Type");
                     content_.Headers.TryAddWithoutValidation("Content-Type", "multipart/form-data; boundary=" + boundary_);
-                    if (unnamed != null)
+                    if (fileFoo != null)
                     {
-                        content_.Add(new System.Net.Http.StringContent(ConvertToString(unnamed, System.Globalization.CultureInfo.InvariantCulture)), "");
+                        var content_fileFoo_ = new System.Net.Http.StreamContent(fileFoo.Data);
+                        if (!string.IsNullOrEmpty(fileFoo.ContentType))
+                            content_fileFoo_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse(fileFoo.ContentType);
+                        content_.Add(content_fileFoo_, "fileFoo", fileFoo.FileName ?? "fileFoo");
                     }
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
@@ -303,7 +301,7 @@ namespace VendorHub.Forms
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>Create Form</summary>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<Form> CreateFormAsync(System.Guid tenantId, CreateFormRequest unnamed = null, CreateFormRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public async System.Threading.Tasks.Task<Form> CreateFormAsync(System.Guid tenantId, CreateFormRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (tenantId == null)
                 throw new System.ArgumentNullException("tenantId");
@@ -370,7 +368,7 @@ namespace VendorHub.Forms
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>List Webhooks</summary>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<object> ListWebhooksAsync(System.Guid tenantId, System.Guid formId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Webhook>> ListWebhooksAsync(System.Guid tenantId, System.Guid formId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (tenantId == null)
                 throw new System.ArgumentNullException("tenantId");
@@ -411,7 +409,7 @@ namespace VendorHub.Forms
                         var status_ = ((int)response_.StatusCode).ToString();
                         if (status_ == "200") 
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<object>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<Webhook>>(response_, headers_).ConfigureAwait(false);
                             return objectResponse_.Object;
                         }
                         else
@@ -421,7 +419,7 @@ namespace VendorHub.Forms
                             throw new ApiException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
                         }
             
-                        return default(object);
+                        return default(System.Collections.Generic.ICollection<Webhook>);
                     }
                     finally
                     {
@@ -438,7 +436,7 @@ namespace VendorHub.Forms
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>Create Webhook</summary>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<object> CreateWebhookAsync(System.Guid tenantId, System.Guid formId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public async System.Threading.Tasks.Task<Webhook> CreateWebhookAsync(System.Guid tenantId, System.Guid formId, CreateWebhookRequest body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (tenantId == null)
                 throw new System.ArgumentNullException("tenantId");
@@ -456,7 +454,9 @@ namespace VendorHub.Forms
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    request_.Content = new System.Net.Http.StringContent(string.Empty, System.Text.Encoding.UTF8, "application/json");
+                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body, _settings.Value));
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
                     request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
     
@@ -480,7 +480,7 @@ namespace VendorHub.Forms
                         var status_ = ((int)response_.StatusCode).ToString();
                         if (status_ == "200") 
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<object>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Webhook>(response_, headers_).ConfigureAwait(false);
                             return objectResponse_.Object;
                         }
                         else
@@ -490,7 +490,7 @@ namespace VendorHub.Forms
                             throw new ApiException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
                         }
             
-                        return default(object);
+                        return default(Webhook);
                     }
                     finally
                     {
@@ -647,7 +647,7 @@ namespace VendorHub.Forms
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>Get Submission Attachment</summary>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<object> GetSubmissionAttachmentAsync(System.Guid tenantId, System.Guid formId, System.Guid submissionId, string attachmentName, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public async System.Threading.Tasks.Task<FileResponse> GetSubmissionAttachmentAsync(System.Guid tenantId, System.Guid formId, System.Guid submissionId, string attachmentName, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (tenantId == null)
                 throw new System.ArgumentNullException("tenantId");
@@ -674,7 +674,7 @@ namespace VendorHub.Forms
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
                     request_.Method = new System.Net.Http.HttpMethod("GET");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/octet-stream"));
     
                     PrepareRequest(client_, request_, urlBuilder_);
                     var url_ = urlBuilder_.ToString();
@@ -694,10 +694,12 @@ namespace VendorHub.Forms
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200") 
+                        if (status_ == "200" || status_ == "206") 
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<object>(response_, headers_).ConfigureAwait(false);
-                            return objectResponse_.Object;
+                            var responseStream_ = response_.Content == null ? System.IO.Stream.Null : await response_.Content.ReadAsStreamAsync().ConfigureAwait(false);
+                            var fileResponse_ = new FileResponse((int)response_.StatusCode, headers_, responseStream_, null, response_); 
+                            client_ = null; response_ = null; // response and client are disposed by FileResponse
+                            return fileResponse_;
                         }
                         else
                         if (status_ != "200" && status_ != "204")
@@ -706,7 +708,7 @@ namespace VendorHub.Forms
                             throw new ApiException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
                         }
             
-                        return default(object);
+                        return default(FileResponse);
                     }
                     finally
                     {
@@ -721,25 +723,31 @@ namespace VendorHub.Forms
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>Install Forms</summary>
+        /// <summary>Delete Webhook</summary>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<object> InstallFormsAsync(System.Guid tenantId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public async System.Threading.Tasks.Task DeleteWebhookAsync(System.Guid tenantId, System.Guid formId, System.Guid webhookId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (tenantId == null)
                 throw new System.ArgumentNullException("tenantId");
     
+            if (formId == null)
+                throw new System.ArgumentNullException("formId");
+    
+            if (webhookId == null)
+                throw new System.ArgumentNullException("webhookId");
+    
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append("tenants/{tenantId}/forms/install");
+            urlBuilder_.Append("tenants/{tenantId}/forms/{formId}/webhooks/{webhookId}");
             urlBuilder_.Replace("{tenantId}", System.Uri.EscapeDataString(ConvertToString(tenantId, System.Globalization.CultureInfo.InvariantCulture)));
+            urlBuilder_.Replace("{formId}", System.Uri.EscapeDataString(ConvertToString(formId, System.Globalization.CultureInfo.InvariantCulture)));
+            urlBuilder_.Replace("{webhookId}", System.Uri.EscapeDataString(ConvertToString(webhookId, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = _httpClient;
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    request_.Content = new System.Net.Http.StringContent(string.Empty, System.Text.Encoding.UTF8, "application/json");
-                    request_.Method = new System.Net.Http.HttpMethod("POST");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+                    request_.Method = new System.Net.Http.HttpMethod("DELETE");
     
                     PrepareRequest(client_, request_, urlBuilder_);
                     var url_ = urlBuilder_.ToString();
@@ -759,19 +767,11 @@ namespace VendorHub.Forms
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200") 
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<object>(response_, headers_).ConfigureAwait(false);
-                            return objectResponse_.Object;
-                        }
-                        else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
                             throw new ApiException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
                         }
-            
-                        return default(object);
                     }
                     finally
                     {
@@ -923,20 +923,23 @@ namespace VendorHub.Forms
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.0.21.0 (Newtonsoft.Json v11.0.0.0)")]
     public partial class SubmissionDetailed 
     {
-        [Newtonsoft.Json.JsonProperty("formId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Guid? FormId { get; set; }
+        [Newtonsoft.Json.JsonProperty("formId", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
+        public System.Guid FormId { get; set; }
     
-        [Newtonsoft.Json.JsonProperty("submissionId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Guid? SubmissionId { get; set; }
+        [Newtonsoft.Json.JsonProperty("submissionId", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
+        public System.Guid SubmissionId { get; set; }
     
-        [Newtonsoft.Json.JsonProperty("submittedOn", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string SubmittedOn { get; set; }
+        [Newtonsoft.Json.JsonProperty("submittedOn", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
+        public System.DateTimeOffset SubmittedOn { get; set; }
     
         [Newtonsoft.Json.JsonProperty("fields", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<SubmissionField> Fields { get; set; }
+        public System.Collections.Generic.IReadOnlyDictionary<string, string> Fields { get; set; }
     
         [Newtonsoft.Json.JsonProperty("attachments", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<SubmissionAttachment> Attachments { get; set; }
+        public System.Collections.Generic.IReadOnlyDictionary<string, SubmissionAttachment> Attachments { get; set; }
     
     
     }
@@ -971,18 +974,18 @@ namespace VendorHub.Forms
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.0.21.0 (Newtonsoft.Json v11.0.0.0)")]
     public partial class Submission 
     {
-        [Newtonsoft.Json.JsonProperty("submissionId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Guid? SubmissionId { get; set; }
+        [Newtonsoft.Json.JsonProperty("submissionId", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
+        public System.Guid SubmissionId { get; set; }
     
-        [Newtonsoft.Json.JsonProperty("formId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Guid? FormId { get; set; }
+        [Newtonsoft.Json.JsonProperty("formId", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
+        public System.Guid FormId { get; set; }
     
-        [Newtonsoft.Json.JsonProperty("tenantId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Guid? TenantId { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("submittedOn", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("submittedOn", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
-        public System.DateTimeOffset? SubmittedOn { get; set; }
+        public System.DateTimeOffset SubmittedOn { get; set; }
     
         [Newtonsoft.Json.JsonProperty("fieldCount", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public int? FieldCount { get; set; }
@@ -996,24 +999,40 @@ namespace VendorHub.Forms
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.0.21.0 (Newtonsoft.Json v11.0.0.0)")]
     public partial class CreateFormRequest 
     {
-        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public string Name { get; set; }
     
-        [Newtonsoft.Json.JsonProperty("fields", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<Fields> Fields { get; set; }
+        [Newtonsoft.Json.JsonProperty("fields", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required]
+        public System.Collections.Generic.ICollection<FormFields> Fields { get; set; } = new System.Collections.ObjectModel.Collection<FormFields>();
     
     
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.0.21.0 (Newtonsoft.Json v11.0.0.0)")]
-    public partial class Fields 
+    public partial class CreateWebhookRequest 
     {
-        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public string Name { get; set; }
+        [Newtonsoft.Json.JsonProperty("notificationUri", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string NotificationUri { get; set; }
     
-        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Type { get; set; }
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.0.21.0 (Newtonsoft.Json v11.0.0.0)")]
+    public partial class Webhook 
+    {
+        [Newtonsoft.Json.JsonProperty("webhookId", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
+        public System.Guid WebhookId { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("createdOn", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
+        public System.DateTimeOffset CreatedOn { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("notificationUri", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
+        public string NotificationUri { get; set; }
     
     
     }
@@ -1024,6 +1043,69 @@ namespace VendorHub.Forms
         public DateFormatConverter()
         {
             DateTimeFormat = "yyyy-MM-dd";
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.0.4.0 (NJsonSchema v10.0.21.0 (Newtonsoft.Json v11.0.0.0))")]
+    public partial class FileParameter
+    {
+        public FileParameter(System.IO.Stream data)
+            : this (data, null)
+        {
+        }
+
+        public FileParameter(System.IO.Stream data, string fileName)
+            : this (data, fileName, null)
+        {
+        }
+
+        public FileParameter(System.IO.Stream data, string fileName, string contentType)
+        {
+            Data = data;
+            FileName = fileName;
+            ContentType = contentType;
+        }
+
+        public System.IO.Stream Data { get; private set; }
+
+        public string FileName { get; private set; }
+
+        public string ContentType { get; private set; }
+    }
+
+    public partial class FileResponse : System.IDisposable
+    {
+        private System.IDisposable _client; 
+        private System.IDisposable _response; 
+
+        public int StatusCode { get; private set; }
+
+        public System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> Headers { get; private set; }
+
+        public System.IO.Stream Stream { get; private set; }
+
+        public bool IsPartial
+        {
+            get { return StatusCode == 206; }
+        }
+
+        public FileResponse(int statusCode, System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> headers, System.IO.Stream stream, System.IDisposable client, System.IDisposable response)
+        {
+            StatusCode = statusCode; 
+            Headers = headers; 
+            Stream = stream; 
+            _client = client; 
+            _response = response;
+        }
+
+        public void Dispose() 
+        {
+            if (Stream != null)
+                Stream.Dispose();
+            if (_response != null)
+                _response.Dispose();
+            if (_client != null)
+                _client.Dispose();
         }
     }
 
