@@ -354,14 +354,14 @@
           "format": "date-time"
         },
         "fields": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/submission-field"
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
           }
         },
         "attachments": {
-          "type": "array",
-          "items": {
+          "type": "object",
+          "additionalProperties": {
             "$ref": "#/definitions/submission-attachment"
           }
         }
@@ -411,10 +411,6 @@
           "type": "string",
           "format": "uuid"
         },
-        "tenantId": {
-          "type": "string",
-          "format": "uuid"
-        },
         "submittedOn": {
           "type": "string",
           "format": "date"
@@ -429,7 +425,6 @@
       "required": [
         "submissionId",
         "formId",
-        "tenantId",
         "submittedOn"
       ]
     },

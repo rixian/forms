@@ -8,37 +8,20 @@ namespace VendorHub.Forms
     using System.Threading;
     using System.Threading.Tasks;
 
+    /// <summary>
+    /// Interface for the VendorHub Forms API client.
+    /// </summary>
     public partial interface IFormsClient
     {
+        /// <summary>
+        /// Submits a form with data and attachments.
+        /// </summary>
+        /// <param name="tenantId">The tenantId of the form owner.</param>
+        /// <param name="formId">The form id.</param>
+        /// <param name="fields">The named fields to include in the form submission.</param>
+        /// <param name="attachments">The named attchments to include in the form submission.</param>
+        /// <param name="cancellationToken">The CancellationToken.</param>
+        /// <returns>The submission details.</returns>
         Task<SubmissionDetailed> SubmitFormAsync(Guid tenantId, Guid formId, IDictionary<string, string> fields, IDictionary<string, FileParameter> attachments, CancellationToken cancellationToken = default(CancellationToken));
     }
-
-    /*
-    [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.0.4.0 (NJsonSchema v10.0.21.0 (Newtonsoft.Json v11.0.0.0))")]
-    public partial class FileParameter
-    {
-        public FileParameter(System.IO.Stream data)
-            : this (data, null)
-        {
-        }
-
-        public FileParameter(System.IO.Stream data, string fileName)
-            : this (data, fileName, null)
-        {
-        }
-
-        public FileParameter(System.IO.Stream data, string fileName, string contentType)
-        {
-            Data = data;
-            FileName = fileName;
-            ContentType = contentType;
-        }
-
-        public System.IO.Stream Data { get; private set; }
-
-        public string FileName { get; private set; }
-
-        public string ContentType { get; private set; }
-    }
-     */
 }

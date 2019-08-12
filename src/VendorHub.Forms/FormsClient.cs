@@ -936,10 +936,10 @@ namespace VendorHub.Forms
         public System.DateTimeOffset SubmittedOn { get; set; }
     
         [Newtonsoft.Json.JsonProperty("fields", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<SubmissionField> Fields { get; set; }
+        public System.Collections.Generic.IReadOnlyDictionary<string, string> Fields { get; set; }
     
         [Newtonsoft.Json.JsonProperty("attachments", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<SubmissionAttachment> Attachments { get; set; }
+        public System.Collections.Generic.IReadOnlyDictionary<string, SubmissionAttachment> Attachments { get; set; }
     
     
     }
@@ -981,10 +981,6 @@ namespace VendorHub.Forms
         [Newtonsoft.Json.JsonProperty("formId", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public System.Guid FormId { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("tenantId", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public System.Guid TenantId { get; set; }
     
         [Newtonsoft.Json.JsonProperty("submittedOn", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]

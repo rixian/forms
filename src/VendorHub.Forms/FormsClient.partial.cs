@@ -9,8 +9,12 @@ namespace VendorHub.Forms
     using System.Threading;
     using System.Threading.Tasks;
 
+    /// <summary>
+    /// Client for the VendorHub Forms api.
+    /// </summary>
     public partial class FormsClient : IFormsClient
     {
+        /// <inheritdoc/>
         public async Task<SubmissionDetailed> SubmitFormAsync(Guid tenantId, Guid formId, IDictionary<string, string> fields, IDictionary<string, FileParameter> attachments, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (tenantId == null)
@@ -118,34 +122,10 @@ namespace VendorHub.Forms
             {
             }
         }
+
+        partial void UpdateJsonSerializerSettings(Newtonsoft.Json.JsonSerializerSettings settings)
+        {
+            settings.Converters.Add(new DictionaryConverter<string>(StringComparer.OrdinalIgnoreCase));
+        }
     }
-
-    /*
-    [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.0.4.0 (NJsonSchema v10.0.21.0 (Newtonsoft.Json v11.0.0.0))")]
-    public partial class FileParameter
-    {
-        public FileParameter(System.IO.Stream data)
-            : this (data, null)
-        {
-        }
-
-        public FileParameter(System.IO.Stream data, string fileName)
-            : this (data, fileName, null)
-        {
-        }
-
-        public FileParameter(System.IO.Stream data, string fileName, string contentType)
-        {
-            Data = data;
-            FileName = fileName;
-            ContentType = contentType;
-        }
-
-        public System.IO.Stream Data { get; private set; }
-
-        public string FileName { get; private set; }
-
-        public string ContentType { get; private set; }
-    }
-     */
 }

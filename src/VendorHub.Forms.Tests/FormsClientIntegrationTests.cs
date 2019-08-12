@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Authentication;
@@ -16,14 +17,14 @@ using Xunit.Abstractions;
 
 public class FormsClientIntegrationTests
 {
-    private readonly ITestOutputHelper logger;
-
     private const string ClientId = "REPLACE_ME";
     private const string ClientSecret = "REPLACE_ME";
     private const string Authority = "https://identity.vendorhub.io/";
-    private const string Scope = "vendorhub.cloudfs vendorhub.forms";
+    private const string Scope = "vendorhub.forms";
     private const string ApiEndpoint = "https://api.vendorhub.io";
     private const string TenantId = "REPLACE_ME";
+
+    private readonly ITestOutputHelper logger;
 
     public FormsClientIntegrationTests(ITestOutputHelper logger)
     {
@@ -73,6 +74,25 @@ public class FormsClientIntegrationTests
 
     [Fact]
     [Trait("TestCategory", "FailsInCloudTest")]
+    public async System.Threading.Tasks.Task ListFormSubmissionsAsync()
+    {
+        var tenantId = Guid.Parse(TenantId);
+        var serviceCollection = new ServiceCollection();
+
+        serviceCollection.AddFormsClient(ClientId, ClientSecret, Scope);
+        ServiceProvider services = serviceCollection.BuildServiceProvider();
+        IFormsClient client = services.GetRequiredService<IFormsClient>();
+
+        ICollection<Form> forms = await client.ListFormsAsync(tenantId).ConfigureAwait(false);
+        Form form = forms.First();
+
+        ICollection<Submission> submissions = await client.ListSubmissionsAsync(tenantId, form.FormId).ConfigureAwait(false);
+        Submission submissionInfo = submissions.FirstOrDefault(s => s.AttachmentCount > 0);
+        SubmissionDetailed submission = await client.GetSubmissionAsync(tenantId, form.FormId, submissionInfo.SubmissionId).ConfigureAwait(false);
+    }
+
+    [Fact]
+    [Trait("TestCategory", "FailsInCloudTest")]
     public async System.Threading.Tasks.Task ListForms2Async()
     {
         var tenantId = Guid.Parse(TenantId);
@@ -82,30 +102,30 @@ public class FormsClientIntegrationTests
         ServiceProvider services = serviceCollection.BuildServiceProvider();
         IFormsClient client = services.GetRequiredService<IFormsClient>();
 
-        //Form form = await client.CreateFormAsync(tenantId, new CreateFormRequest
-        //{
-        //    Name = "TestForm",
-        //    Fields = new List<FormFields>
-        //    {
-        //        new FormFields
-        //        {
-        //            Name = "Name",
-        //            Type = "string",
-        //        },
-        //        new FormFields
-        //        {
-        //            Name = "Age",
-        //            Type = "int",
-        //        },
-        //    },
-        //}).ConfigureAwait(false);
-        //form.Should().NotBeNull();
-
-        //form = await client.GetFormAsync(tenantId, form.FormId).ConfigureAwait(false);
-        //form.Should().NotBeNull();
-
-        var form = await client.GetFormAsync(tenantId, Guid.Parse("REPLACE_ME")).ConfigureAwait(false);
+        Form form = await client.CreateFormAsync(tenantId, new CreateFormRequest
+        {
+            Name = "TestForm",
+            Fields = new List<FormFields>
+            {
+                new FormFields
+                {
+                    Name = "Name",
+                    Type = "string",
+                },
+                new FormFields
+                {
+                    Name = "Age",
+                    Type = "int",
+                },
+            },
+        }).ConfigureAwait(false);
         form.Should().NotBeNull();
+
+        form = await client.GetFormAsync(tenantId, form.FormId).ConfigureAwait(false);
+        form.Should().NotBeNull();
+
+        // var form = await client.GetFormAsync(tenantId, Guid.Parse("4085d55a-bf60-4195-92f7-7875329748f9")).ConfigureAwait(false);
+        // form.Should().NotBeNull();
 
         SubmissionDetailed submission = await client.SubmitFormAsync(
             tenantId,
