@@ -10,7 +10,7 @@ namespace VendorHub.Forms
 
     public partial interface IFormsClient
     {
-        Task<SubmissionDetailed> SubmitFormAsync(Guid tenantId, Guid formId, Dictionary<string, string> fields, Dictionary<string, FileParameter> attachments, CancellationToken cancellationToken = default(CancellationToken));
+        Task<SubmissionDetailed> SubmitFormAsync(Guid tenantId, Guid formId, IDictionary<string, string> fields, IDictionary<string, FileParameter> attachments, CancellationToken cancellationToken = default(CancellationToken));
     }
 
     /*

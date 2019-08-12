@@ -32,14 +32,14 @@
           "name": "tenantId",
           "in": "path",
           "type": "string",
-          "format": "guid",
+          "format": "uuid",
           "required": true
         },
         {
           "name": "formId",
           "in": "path",
           "type": "string",
-          "format": "guid",
+          "format": "uuid",
           "required": true
         }
       ],
@@ -80,7 +80,7 @@
           "name": "tenantId",
           "in": "path",
           "type": "string",
-          "format": "guid",
+          "format": "uuid",
           "required": true
         }
       ],
@@ -96,9 +96,6 @@
         "operationId": "create-form",
         "summary": "Create Form",
         "parameters": [
-          {
-            "$ref": "#/definitions/create-form-request"
-          },
           {
             "in": "body",
             "name": "body",
@@ -128,14 +125,14 @@
           "name": "tenantId",
           "in": "path",
           "type": "string",
-          "format": "guid",
+          "format": "uuid",
           "required": true
         },
         {
           "name": "formId",
           "in": "path",
           "type": "string",
-          "format": "guid",
+          "format": "uuid",
           "required": true
         }
       ],
@@ -171,14 +168,14 @@
           "name": "tenantId",
           "in": "path",
           "type": "string",
-          "format": "guid",
+          "format": "uuid",
           "required": true
         },
         {
           "name": "formId",
           "in": "path",
           "type": "string",
-          "format": "guid",
+          "format": "uuid",
           "required": true
         }
       ]
@@ -201,21 +198,21 @@
           "name": "tenantId",
           "in": "path",
           "type": "string",
-          "format": "guid",
+          "format": "uuid",
           "required": true
         },
         {
           "name": "formId",
           "in": "path",
           "type": "string",
-          "format": "guid",
+          "format": "uuid",
           "required": true
         },
         {
           "name": "submissionId",
           "in": "path",
           "type": "string",
-          "format": "guid",
+          "format": "uuid",
           "required": true
         }
       ]
@@ -226,7 +223,7 @@
           "200": {
             "description": "",
             "schema": {
-              "type": "object",
+              "type": "file",
               "properties": {}
             }
           }
@@ -239,21 +236,21 @@
           "name": "tenantId",
           "in": "path",
           "type": "string",
-          "format": "guid",
+          "format": "uuid",
           "required": true
         },
         {
           "name": "formId",
           "in": "path",
           "type": "string",
-          "format": "guid",
+          "format": "uuid",
           "required": true
         },
         {
           "name": "submissionId",
           "in": "path",
           "type": "string",
-          "format": "guid",
+          "format": "uuid",
           "required": true
         },
         {
@@ -283,7 +280,7 @@
           "name": "tenantId",
           "in": "path",
           "type": "string",
-          "format": "guid",
+          "format": "uuid",
           "required": true
         }
       ]
@@ -296,7 +293,7 @@
       "properties": {
         "formId": {
           "type": "string",
-          "format": "guid"
+          "format": "uuid"
         },
         "name": {
           "type": "string"
@@ -346,11 +343,11 @@
       "properties": {
         "formId": {
           "type": "string",
-          "format": "guid"
+          "format": "uuid"
         },
         "submissionId": {
           "type": "string",
-          "format": "guid"
+          "format": "uuid"
         },
         "submittedOn": {
           "type": "string",
@@ -368,7 +365,12 @@
             "$ref": "#/definitions/submission-attachment"
           }
         }
-      }
+      },
+      "required": [
+        "formId",
+        "submissionId",
+        "submittedOn"
+      ]
     },
     "submission-field": {
       "type": "object",
@@ -403,15 +405,15 @@
       "properties": {
         "submissionId": {
           "type": "string",
-          "format": "guid"
+          "format": "uuid"
         },
         "formId": {
           "type": "string",
-          "format": "guid"
+          "format": "uuid"
         },
         "tenantId": {
           "type": "string",
-          "format": "guid"
+          "format": "uuid"
         },
         "submittedOn": {
           "type": "string",
@@ -423,7 +425,13 @@
         "attachmentCount": {
           "type": "integer"
         }
-      }
+      },
+      "required": [
+        "submissionId",
+        "formId",
+        "tenantId",
+        "submittedOn"
+      ]
     },
     "create-form-request": {
       "type": "object",
@@ -435,22 +443,14 @@
         "fields": {
           "type": "array",
           "items": {
-            "type": "object",
-            "title": "FormField",
-            "properties": {
-              "name": {
-                "type": "string"
-              },
-              "type": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "name"
-            ]
+            "$ref": "#/definitions/form-fields"
           }
         }
-      }
+      },
+      "required": [
+        "name",
+        "fields"
+      ]
     }
   },
   "parameters": {}

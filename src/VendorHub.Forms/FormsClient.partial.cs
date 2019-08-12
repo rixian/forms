@@ -9,9 +9,9 @@ namespace VendorHub.Forms
     using System.Threading;
     using System.Threading.Tasks;
 
-    public partial class FormsClient
+    public partial class FormsClient : IFormsClient
     {
-        public async Task<SubmissionDetailed> SubmitFormAsync(Guid tenantId, Guid formId, Dictionary<string, string> fields, Dictionary<string, FileParameter> attachments, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<SubmissionDetailed> SubmitFormAsync(Guid tenantId, Guid formId, IDictionary<string, string> fields, IDictionary<string, FileParameter> attachments, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (tenantId == null)
             {
