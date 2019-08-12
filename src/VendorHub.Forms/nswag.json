@@ -15,7 +15,9 @@
       "generateClientInterfaces": true,
       "injectHttpClient": true,
       "disposeHttpClient": true,
-      "protectedMethods": [],
+      "protectedMethods": [
+        "FormsClient.SubmitFormAsync"
+      ],
       "generateExceptionClasses": true,
       "exceptionClass": "ApiException",
       "wrapDtoExceptions": true,

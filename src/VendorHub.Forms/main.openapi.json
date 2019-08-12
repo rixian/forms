@@ -22,11 +22,8 @@
         "parameters": [
           {
             "in": "formData",
-            "name": "",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
+            "name": "fileFoo",
+            "type": "file"
           }
         ]
       },
@@ -356,7 +353,8 @@
           "format": "guid"
         },
         "submittedOn": {
-          "type": "string"
+          "type": "string",
+          "format": "date-time"
         },
         "fields": {
           "type": "array",

@@ -16,11 +16,6 @@ namespace VendorHub.Forms
     public partial interface IFormsClient
     {
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>Submit Form</summary>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<object> SubmitFormAsync(System.Guid tenantId, System.Guid formId, System.Collections.Generic.IEnumerable<string> unnamed = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-    
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>List Submissions</summary>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Submission>> ListSubmissionsAsync(System.Guid tenantId, System.Guid formId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
@@ -94,7 +89,7 @@ namespace VendorHub.Forms
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>Submit Form</summary>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<object> SubmitFormAsync(System.Guid tenantId, System.Guid formId, System.Collections.Generic.IEnumerable<string> unnamed = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        protected async System.Threading.Tasks.Task<object> SubmitFormCoreAsync(System.Guid tenantId, System.Guid formId, FileParameter fileFoo = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (tenantId == null)
                 throw new System.ArgumentNullException("tenantId");
@@ -116,9 +111,12 @@ namespace VendorHub.Forms
                     var content_ = new System.Net.Http.MultipartFormDataContent(boundary_);
                     content_.Headers.Remove("Content-Type");
                     content_.Headers.TryAddWithoutValidation("Content-Type", "multipart/form-data; boundary=" + boundary_);
-                    if (unnamed != null)
+                    if (fileFoo != null)
                     {
-                        content_.Add(new System.Net.Http.StringContent(ConvertToString(unnamed, System.Globalization.CultureInfo.InvariantCulture)), "");
+                        var content_fileFoo_ = new System.Net.Http.StreamContent(fileFoo.Data);
+                        if (!string.IsNullOrEmpty(fileFoo.ContentType))
+                            content_fileFoo_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse(fileFoo.ContentType);
+                        content_.Add(content_fileFoo_, "fileFoo", fileFoo.FileName ?? "fileFoo");
                     }
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
@@ -930,7 +928,7 @@ namespace VendorHub.Forms
         public System.Guid? SubmissionId { get; set; }
     
         [Newtonsoft.Json.JsonProperty("submittedOn", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string SubmittedOn { get; set; }
+        public System.DateTimeOffset? SubmittedOn { get; set; }
     
         [Newtonsoft.Json.JsonProperty("fields", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.ICollection<SubmissionField> Fields { get; set; }
@@ -1025,6 +1023,33 @@ namespace VendorHub.Forms
         {
             DateTimeFormat = "yyyy-MM-dd";
         }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.0.4.0 (NJsonSchema v10.0.21.0 (Newtonsoft.Json v11.0.0.0))")]
+    public partial class FileParameter
+    {
+        public FileParameter(System.IO.Stream data)
+            : this (data, null)
+        {
+        }
+
+        public FileParameter(System.IO.Stream data, string fileName)
+            : this (data, fileName, null)
+        {
+        }
+
+        public FileParameter(System.IO.Stream data, string fileName, string contentType)
+        {
+            Data = data;
+            FileName = fileName;
+            ContentType = contentType;
+        }
+
+        public System.IO.Stream Data { get; private set; }
+
+        public string FileName { get; private set; }
+
+        public string ContentType { get; private set; }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.0.4.0 (NJsonSchema v10.0.21.0 (Newtonsoft.Json v11.0.0.0))")]
