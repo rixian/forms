@@ -35,7 +35,7 @@ public class FormsClientIntegrationTests
     [Trait("TestCategory", "FailsInCloudTest")]
     public async System.Threading.Tasks.Task ListFormsAsync()
     {
-        var tenantId = Guid.Parse("REPLACE_ME");
+        var tenantId = Guid.Parse(TenantId);
         var serviceCollection = new ServiceCollection();
 
         serviceCollection.AddHttpClient("tls12")
@@ -105,14 +105,14 @@ public class FormsClientIntegrationTests
         Form form = await client.CreateFormAsync(tenantId, new CreateFormRequest
         {
             Name = "TestForm",
-            Fields = new List<FormFields>
+            Fields = new List<FormField>
             {
-                new FormFields
+                new FormField
                 {
                     Name = "Name",
                     Type = "string",
                 },
-                new FormFields
+                new FormField
                 {
                     Name = "Age",
                     Type = "int",
@@ -155,7 +155,7 @@ public class FormsClientIntegrationTests
         Guid tenantId = Guid.Empty; // <-- REPLACE_ME
         var serviceCollection = new ServiceCollection();
 
-        serviceCollection.AddFormsClient("REPLACE_ME", "REPLACE_ME", "vendorhub.forms");
+        serviceCollection.AddFormsClient(ClientId, ClientSecret, Scope);
         ServiceProvider services = serviceCollection.BuildServiceProvider();
         IFormsClient client = services.GetRequiredService<IFormsClient>();
 

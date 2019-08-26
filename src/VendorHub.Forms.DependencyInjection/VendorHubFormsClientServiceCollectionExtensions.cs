@@ -56,21 +56,14 @@ namespace Microsoft.Extensions.DependencyInjection
                 throw new ArgumentOutOfRangeException(nameof(options));
             }
 
-            serviceCollection.AddHttpClient("vendorhub_oidc")
-                .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
-                {
-                    SslProtocols = SslProtocols.Tls12,
-                });
-            serviceCollection
-                .AddTokenClient("vendorhub_forms_token", options.TokenClientOptions)
-                .ConfigureHttpClient("vendorhub_oidc");
+            serviceCollection.AddTokenClient("vendorhub_forms_token", options.TokenClientOptions);
 
             serviceCollection
                 .AddHttpClient("vendorhub_forms", c => c.BaseAddress = options.FormsApiUri)
                 .ConfigurePrimaryHttpMessageHandler((svc) =>
                 {
-                    ITokenClientFactory tokenClientFacotry = svc.GetRequiredService<ITokenClientFactory>();
-                    ITokenClient tokenClient = tokenClientFacotry.GetTokenClient("vendorhub_forms_token");
+                    ITokenClientFactory tokenClientFactory = svc.GetRequiredService<ITokenClientFactory>();
+                    ITokenClient tokenClient = tokenClientFactory.GetTokenClient("vendorhub_forms_token");
                     return new TokenClientDelegatingHandler(tokenClient)
                     {
                         SslProtocols = SslProtocols.Tls12,

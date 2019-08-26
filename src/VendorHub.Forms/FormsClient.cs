@@ -889,7 +889,7 @@ namespace VendorHub.Forms
         public string Name { get; set; }
     
         [Newtonsoft.Json.JsonProperty("fields", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<FormFields> Fields { get; set; }
+        public System.Collections.Generic.ICollection<FormField> Fields { get; set; }
     
         [Newtonsoft.Json.JsonProperty("submissionCount", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public int? SubmissionCount { get; set; }
@@ -908,7 +908,7 @@ namespace VendorHub.Forms
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.0.21.0 (Newtonsoft.Json v11.0.0.0)")]
-    public partial class FormFields 
+    public partial class FormField 
     {
         [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
@@ -1005,7 +1005,7 @@ namespace VendorHub.Forms
     
         [Newtonsoft.Json.JsonProperty("fields", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required]
-        public System.Collections.Generic.ICollection<FormFields> Fields { get; set; } = new System.Collections.ObjectModel.Collection<FormFields>();
+        public System.Collections.Generic.ICollection<FormField> Fields { get; set; } = new System.Collections.ObjectModel.Collection<FormField>();
     
     
     }

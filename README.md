@@ -1,26 +1,70 @@
-# Your Library
-
-***An awesome template for your awesome library***
+# VendorHub Forms Client
 
 [![NuGet package](https://img.shields.io/nuget/v/VendorHub.Forms.svg)](https://nuget.org/packages/VendorHub.Forms)
+[![codecov](https://codecov.io/gh/VendorHub/forms/branch/master/graph/badge.svg)](https://codecov.io/gh/VendorHub/forms)
 
 ## Features
 
-* Follow the best and simplest patterns of build, pack and test with dotnet CLI.
-* Static analyzers: [FxCop](https://docs.microsoft.com/en-us/visualstudio/code-quality/fxcop-analyzers?view=vs-2019) and [StyleCop](https://github.com/DotNetAnalyzers/StyleCopAnalyzers)
-* Read-only source tree (builds to top-level bin/obj folders)
-* Auto-versioning (via [Nerdbank.GitVersioning](https://github.com/aarnott/nerdbank.gitversioning))
-* Azure Pipeline via YAML with all dependencies declared for long-term serviceability.
-* Testing on .NET Framework, multiple .NET Core versions
-* Testing on Windows, Linux and OSX
-* Code coverage published to Azure Pipelines
-* Code coverage published to codecov.io so GitHub PRs get code coverage results added as a PR comment
+* Manage forms and submissions.
+* Automatic token refreshing via [Token Extensions](https://github.com/rixian/extensions-tokens)
+* TLS 1.2 connection to VendorHub APIs.
 
-## Consumption
+## Details
 
-Once you've expanded this template for your own use, you should **run the `Expand-Template.ps1` script** to customize the template for your own project.
+This library registers an ITokenClient with the logical name `vendorhub_forms_token`, and an HttpClient with the logical name `vendorhub_forms`.
 
-Further customize your repo by:
+## Usage
 
-1. Verify the license is suitable for your goal as it appears in the LICENSE and stylecop.json files and the Directory.Build.props file's `PackageLicenseExpression` property.
-1. Reset or replace the badges at the top of this file.
+### Basic Dependency Injection
+```csharp
+IServiceCollection services = ...;
+
+string clientId = "REPLACE_ME";
+string clientSecret = "REPLACE_ME";
+
+services.AddFormsClient(clientId, clientSecret);
+
+...
+
+public class Foo
+{
+    public Foo(IFormsClient formsClient) // Injected IFormsClient
+    {
+        ...
+    }
+}
+```
+
+### Advanced Dependency Injection
+```csharp
+IServiceCollection services = ...;
+
+string clientId = "REPLACE_ME";
+string clientSecret = "REPLACE_ME";
+string authority = "https://identity.vendorhub.io";
+string scope = "vendorhub.forms";
+
+services.AddFormsClient(new FormsClientOptions
+    {
+        FormsApiUri = new Uri("https://api.vendorhub.io"),
+        TokenClientOptions = new TokenClientOptions
+        {
+            Authority = authority,
+            ClientId = clientId,
+            ClientSecret = clientSecret,
+            Scope = scope,
+            RequireHttps = true,
+            ValidateIssuerName = true,
+        }
+    });
+
+...
+
+public class Foo
+{
+    public Foo(IFormsClient formsClient) // Injected IFormsClient
+    {
+        ...
+    }
+}
+```
