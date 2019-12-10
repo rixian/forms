@@ -25,10 +25,25 @@ public class FormsClientIntegrationTests
     private const string TenantId = "REPLACE_ME";
 
     private readonly ITestOutputHelper logger;
+    private readonly IFormsClient client;
 
     public FormsClientIntegrationTests(ITestOutputHelper logger)
     {
         this.logger = logger;
+
+        var serviceCollection = new ServiceCollection();
+
+        serviceCollection.AddFormsClient(new FormsClientOptions
+        {
+            TokenClientOptions = new TokenClientOptions
+            {
+                ClientId = ClientId,
+                ClientSecret = ClientSecret,
+                Scope = Scope,
+            },
+        });
+        ServiceProvider services = serviceCollection.BuildServiceProvider();
+        this.client = services.GetRequiredService<IFormsClient>();
     }
 
     [Fact]
@@ -36,40 +51,7 @@ public class FormsClientIntegrationTests
     public async System.Threading.Tasks.Task ListFormsAsync()
     {
         var tenantId = Guid.Parse(TenantId);
-        var serviceCollection = new ServiceCollection();
-
-        serviceCollection.AddHttpClient("tls12")
-            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
-            {
-                SslProtocols = SslProtocols.Tls12,
-            });
-
-        serviceCollection.AddTokenClient(new TokenClientOptions
-            {
-                ClientId = ClientId,
-                ClientSecret = ClientSecret,
-                Authority = Authority,
-                Scope = Scope,
-            })
-            .ConfigureHttpClient("tls12");
-
-        serviceCollection
-            .AddHttpClient("vendorhub", c => c.BaseAddress = new Uri(ApiEndpoint))
-            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
-            {
-                SslProtocols = SslProtocols.Tls12,
-            });
-
-        ServiceProvider services = serviceCollection.BuildServiceProvider();
-
-        ITokenClient tokenClient = services.GetRequiredService<ITokenClientFactory>().GetTokenClient();
-        ITokenInfo token = await tokenClient.GetTokenAsync().ConfigureAwait(false);
-#pragma warning disable CA2000 // Dispose objects before losing scope
-        HttpClient httpClient = services.GetRequiredService<IHttpClientFactory>().CreateClient("vendorhub");
-#pragma warning restore CA2000 // Dispose objects before losing scope
-        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
-        IFormsClient client = new FormsClient(httpClient);
-        System.Collections.Generic.ICollection<Form> forms = await client.ListFormsAsync(tenantId).ConfigureAwait(false);
+        ICollection<FormDefinition> forms = await this.client.ListFormsAsync(tenantId).ConfigureAwait(false);
     }
 
     [Fact]
@@ -77,18 +59,12 @@ public class FormsClientIntegrationTests
     public async System.Threading.Tasks.Task ListFormSubmissionsAsync()
     {
         var tenantId = Guid.Parse(TenantId);
-        var serviceCollection = new ServiceCollection();
+        ICollection<FormDefinition> forms = await this.client.ListFormsAsync(tenantId).ConfigureAwait(false);
+        FormDefinition form = forms.First();
 
-        serviceCollection.AddFormsClient(ClientId, ClientSecret, Scope);
-        ServiceProvider services = serviceCollection.BuildServiceProvider();
-        IFormsClient client = services.GetRequiredService<IFormsClient>();
-
-        ICollection<Form> forms = await client.ListFormsAsync(tenantId).ConfigureAwait(false);
-        Form form = forms.First();
-
-        ICollection<Submission> submissions = await client.ListSubmissionsAsync(tenantId, form.FormId).ConfigureAwait(false);
-        Submission submissionInfo = submissions.FirstOrDefault(s => s.AttachmentCount > 0);
-        SubmissionDetailed submission = await client.GetSubmissionAsync(tenantId, form.FormId, submissionInfo.SubmissionId).ConfigureAwait(false);
+        ICollection<FormSubmission> submissions = await this.client.ListSubmissionsAsync(tenantId, form.FormId).ConfigureAwait(false);
+        FormSubmission submissionInfo = submissions.FirstOrDefault(s => s.Attachments.Count > 0);
+        FormSubmission submission = await this.client.GetSubmissionAsync(tenantId, form.FormId, submissionInfo.SubmissionId).ConfigureAwait(false);
     }
 
     [Fact]
@@ -96,69 +72,60 @@ public class FormsClientIntegrationTests
     public async System.Threading.Tasks.Task ListForms2Async()
     {
         var tenantId = Guid.Parse(TenantId);
-        var serviceCollection = new ServiceCollection();
-
-        serviceCollection.AddFormsClient(ClientId, ClientSecret, Scope);
-        ServiceProvider services = serviceCollection.BuildServiceProvider();
-        IFormsClient client = services.GetRequiredService<IFormsClient>();
-
-        Form form = await client.CreateFormAsync(tenantId, new CreateFormRequest
-        {
-            Name = "TestForm",
-            Fields = new List<FormField>
+        FormDefinition form = await this.client.CreateFormAsync(
+            new CreateFormRequest
             {
-                new FormField
+                Name = "TestForm",
+                Fields = new List<FormFieldDefinition>
                 {
-                    Name = "Name",
-                    Type = "string",
-                },
-                new FormField
-                {
-                    Name = "Age",
-                    Type = "int",
+                    new FormFieldDefinition
+                    {
+                        Name = "Name",
+                        Type = "string",
+                    },
+                    new FormFieldDefinition
+                    {
+                        Name = "Age",
+                        Type = "int",
+                    },
                 },
             },
-        }).ConfigureAwait(false);
+            tenantId).ConfigureAwait(false);
         form.Should().NotBeNull();
 
-        form = await client.GetFormAsync(tenantId, form.FormId).ConfigureAwait(false);
+        form = await this.client.GetFormAsync(tenantId, form.FormId).ConfigureAwait(false);
         form.Should().NotBeNull();
 
-        SubmissionDetailed submission = await client.SubmitFormAsync(
-            tenantId,
+        FormSubmission submission = await this.client.SubmitFormAsync(
             form.FormId,
             new Dictionary<string, string>
             {
                 ["Name"] = "Test",
                 ["Age"] = "30",
             },
-            new Dictionary<string, FileParameter>
+            new Dictionary<string, HttpFile>
             {
-                ["ProfilePicture"] = new FileParameter(File.OpenRead("350x350.png"), "test.png", "image/png"),
-            }).ConfigureAwait(false);
+                ["ProfilePicture"] = new HttpFile(File.OpenRead("350x350.png"), "test.png", "image/png"),
+            },
+            tenantId).ConfigureAwait(false);
         submission.Should().NotBeNull();
 
-        submission = await client.GetSubmissionAsync(tenantId, form.FormId, submission.SubmissionId).ConfigureAwait(false);
+        submission = await this.client.GetSubmissionAsync(tenantId, form.FormId, submission.SubmissionId).ConfigureAwait(false);
         submission.Should().NotBeNull();
 
 #pragma warning disable CA2000 // Dispose objects before losing scope
-        FileResponse attachment = await client.GetSubmissionAttachmentAsync(tenantId, form.FormId, submission.SubmissionId, "ProfilePicture").ConfigureAwait(false);
+        HttpFile attachment = await this.client.GetSubmissionAttachmentAsync(form.FormId, submission.SubmissionId, "ProfilePicture", tenantId).ConfigureAwait(false);
 #pragma warning restore CA2000 // Dispose objects before losing scope
         attachment.Should().NotBeNull();
 
-        System.Collections.Generic.ICollection<Form> forms = await client.ListFormsAsync(tenantId).ConfigureAwait(false);
+        ICollection<FormDefinition> forms = await this.client.ListFormsAsync(tenantId).ConfigureAwait(false);
     }
 
     [Fact]
     public void ForClient_Created_Success()
     {
         Guid tenantId = Guid.Empty; // <-- REPLACE_ME
-        var serviceCollection = new ServiceCollection();
 
-        serviceCollection.AddFormsClient(ClientId, ClientSecret, Scope);
-        ServiceProvider services = serviceCollection.BuildServiceProvider();
-        IFormsClient client = services.GetRequiredService<IFormsClient>();
-
-        client.Should().NotBeNull();
+        this.client.Should().NotBeNull();
     }
 }
