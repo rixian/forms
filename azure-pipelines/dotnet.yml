@@ -61,6 +61,6 @@ steps:
 
 - bash: bash <(curl -s https://codecov.io/bash)
   displayName: Publish code coverage results to codecov.io
-  condition: ne(variables['codecov_token'], '')
+  condition: and(ne(variables['codecov_token'], ''), ne(variables['Agent.OS'], 'Windows_NT'))
   timeoutInMinutes: 3
   continueOnError: true
