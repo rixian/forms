@@ -3,11 +3,18 @@
 
 namespace VendorHub.Forms
 {
+    using System;
     using Newtonsoft.Json;
 
+    /// <summary>
+    /// Request object used for creating webhooks.
+    /// </summary>
     public class CreateWebhookRequest
     {
+        /// <summary>
+        /// Gets or sets the webhook URI.
+        /// </summary>
         [JsonProperty("notificationUri")]
-        public string NotificationUri { get; set; }
+        public Uri NotificationUri { get; set; }
     }
 }

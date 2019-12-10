@@ -5,11 +5,20 @@ namespace VendorHub.Forms
 {
     using Newtonsoft.Json;
 
+    /// <summary>
+    /// The definition of a form field.
+    /// </summary>
     public class FormFieldDefinition
     {
+        /// <summary>
+        /// Gets or sets the form field name.
+        /// </summary>
         [JsonProperty("name")]
         public string Name { get; set; }
 
+        /// <summary>
+        /// Gets or sets the form field type.
+        /// </summary>
         [JsonProperty("type")]
         public string Type { get; set; }
     }

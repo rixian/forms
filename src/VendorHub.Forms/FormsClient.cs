@@ -11,6 +11,9 @@ namespace VendorHub.Forms
     using Polly;
     using Rixian.Extensions.Http.Client;
 
+    /// <summary>
+    /// Client for the VendorHub Forms Api.
+    /// </summary>
     public class FormsClient : IFormsClient
     {
         private readonly HttpClient httpClient;

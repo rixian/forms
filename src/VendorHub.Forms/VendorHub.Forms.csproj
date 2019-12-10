@@ -4,6 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <CodeAnalysisRuleSet>..\shipping.ruleset</CodeAnalysisRuleSet>
     <Description>Client library for the VendorHub Forms service.</Description>
+    <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
 
   <ItemGroup>

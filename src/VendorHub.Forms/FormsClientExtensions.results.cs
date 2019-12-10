@@ -12,8 +12,19 @@ namespace VendorHub.Forms
     using Rixian.Extensions.Errors;
     using Rixian.Extensions.Http.Client;
 
+    /// <summary>
+    /// Extensions for the VendorHub Forms Api client.
+    /// </summary>
     public static partial class FormsClientExtensions
     {
+        /// <summary>
+        /// Creates a new forms.
+        /// </summary>
+        /// <param name="formsClient">The IFormsClient to use.</param>
+        /// <param name="request">The request body.</param>
+        /// <param name="tenantId">The ID of the requested tenant.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>The result or an error.</returns>
         public static async Task<Result<FormDefinition>> CreateFormResultAsync(this IFormsClient formsClient, CreateFormRequest request, Guid tenantId, CancellationToken cancellationToken = default)
         {
             if (formsClient is null)
@@ -44,6 +55,15 @@ namespace VendorHub.Forms
             }
         }
 
+        /// <summary>
+        /// Creates a new form specific webhook.
+        /// </summary>
+        /// <param name="formsClient">The IFormsClient to use.</param>
+        /// <param name="formId">The ID of the requested form.</param>
+        /// <param name="request">The request body.</param>
+        /// <param name="tenantId">The ID of the requested tenant.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>The result or an error.</returns>
         public static async Task<Result<Webhook>> CreateWebhookResultAsync(this IFormsClient formsClient, Guid formId, CreateWebhookRequest request, Guid tenantId, CancellationToken cancellationToken = default)
         {
             if (formsClient is null)
@@ -74,6 +94,15 @@ namespace VendorHub.Forms
             }
         }
 
+        /// <summary>
+        /// Deletes a specific webhook for a form.
+        /// </summary>
+        /// <param name="formsClient">The IFormsClient to use.</param>
+        /// <param name="formId">The ID of the requested form.</param>
+        /// <param name="webhookId">The ID of the requested webhook.</param>
+        /// <param name="tenantId">The ID of the requested tenant.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>The result or an error.</returns>
         public static async Task<Result> DeleteWebhookResultAsync(this IFormsClient formsClient, Guid formId, Guid webhookId, Guid tenantId, CancellationToken cancellationToken = default)
         {
             if (formsClient is null)
@@ -104,6 +133,13 @@ namespace VendorHub.Forms
             }
         }
 
+        /// <summary>
+        /// Gets the submission statistics for all forms.
+        /// </summary>
+        /// <param name="formsClient">The IFormsClient to use.</param>
+        /// <param name="tenantId">The ID of the requested tenant.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>The result or an error.</returns>
         public static async Task<Result<IReadOnlyDictionary<DateTimeOffset, int>>> GetAllFormStatisticsResultAsync(this IFormsClient formsClient, Guid tenantId, CancellationToken cancellationToken = default)
         {
             if (formsClient is null)
@@ -134,6 +170,14 @@ namespace VendorHub.Forms
             }
         }
 
+        /// <summary>
+        /// Gets a particular form.
+        /// </summary>
+        /// <param name="formsClient">The IFormsClient to use.</param>
+        /// <param name="formId">The ID of the requested form.</param>
+        /// <param name="tenantId">The ID of the requested tenant.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>The result or an error.</returns>
         public static async Task<Result<FormDefinition>> GetFormResultAsync(this IFormsClient formsClient, Guid formId, Guid tenantId, CancellationToken cancellationToken = default)
         {
             if (formsClient is null)
@@ -164,6 +208,14 @@ namespace VendorHub.Forms
             }
         }
 
+        /// <summary>
+        /// Gets the submission statistics for a particular form.
+        /// </summary>
+        /// <param name="formsClient">The IFormsClient to use.</param>
+        /// <param name="formId">The ID of the requested form.</param>
+        /// <param name="tenantId">The ID of the requested tenant.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>The result or an error.</returns>
         public static async Task<Result<IReadOnlyDictionary<DateTimeOffset, int>>> GetFormStatisticsResultAsync(this IFormsClient formsClient, Guid formId, Guid tenantId, CancellationToken cancellationToken = default)
         {
             if (formsClient is null)
@@ -194,6 +246,16 @@ namespace VendorHub.Forms
             }
         }
 
+        /// <summary>
+        /// Gets a particular form submission attachment.
+        /// </summary>
+        /// <param name="formsClient">The IFormsClient to use.</param>
+        /// <param name="formId">The ID of the requested form.</param>
+        /// <param name="submissionId">The ID of the requested submission.</param>
+        /// <param name="attachmentName">The name of the attachment.</param>
+        /// <param name="tenantId">The ID of the requested tenant.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>The result or an error.</returns>
         public static async Task<Result<HttpFile>> GetSubmissionAttachmentResultAsync(this IFormsClient formsClient, Guid formId, Guid submissionId, string attachmentName, Guid tenantId, CancellationToken cancellationToken = default)
         {
             if (formsClient is null)
@@ -229,6 +291,15 @@ namespace VendorHub.Forms
             }
         }
 
+        /// <summary>
+        /// Gets a particular form submission.
+        /// </summary>
+        /// <param name="formsClient">The IFormsClient to use.</param>
+        /// <param name="formId">The ID of the requested form.</param>
+        /// <param name="submissionId">The ID of the requested submission.</param>
+        /// <param name="tenantId">The ID of the requested tenant.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>The result or an error.</returns>
         public static async Task<Result<FormSubmission>> GetSubmissionResultAsync(this IFormsClient formsClient, Guid formId, Guid submissionId, Guid tenantId, CancellationToken cancellationToken = default)
         {
             if (formsClient is null)
@@ -259,6 +330,13 @@ namespace VendorHub.Forms
             }
         }
 
+        /// <summary>
+        /// Lists all forms for a particular tenant.
+        /// </summary>
+        /// <param name="formsClient">The IFormsClient to use.</param>
+        /// <param name="tenantId">The ID of the requested tenant.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>The result or an error.</returns>
         public static async Task<Result<ICollection<FormDefinition>>> ListFormsResultAsync(this IFormsClient formsClient, Guid tenantId, CancellationToken cancellationToken = default)
         {
             if (formsClient is null)
@@ -289,7 +367,15 @@ namespace VendorHub.Forms
             }
         }
 
-        public static async Task<Result<ICollection<FormSubmission>>> ListSubmissionsResultAsync(this IFormsClient formsClient, Guid formId, Guid tenantId, CancellationToken cancellationToken = default)
+        /// <summary>
+        /// Lists the submissions for a particular form.
+        /// </summary>
+        /// <param name="formsClient">The IFormsClient to use.</param>
+        /// <param name="formId">The ID of the requested form.</param>
+        /// <param name="tenantId">The ID of the requested tenant.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>The result or an error.</returns>
+        public static async Task<Result<ICollection<FormSubmissionSummary>>> ListSubmissionsResultAsync(this IFormsClient formsClient, Guid formId, Guid tenantId, CancellationToken cancellationToken = default)
         {
             if (formsClient is null)
             {
@@ -303,7 +389,7 @@ namespace VendorHub.Forms
                 switch (response.StatusCode)
                 {
                     case HttpStatusCode.OK:
-                        return Result.Create(await response.DeserializeJsonContentAsync<ICollection<FormSubmission>>().ConfigureAwait(false));
+                        return Result.Create(await response.DeserializeJsonContentAsync<ICollection<FormSubmissionSummary>>().ConfigureAwait(false));
                     case HttpStatusCode.NoContent:
                         return default;
                     case HttpStatusCode.BadRequest:
@@ -319,6 +405,14 @@ namespace VendorHub.Forms
             }
         }
 
+        /// <summary>
+        /// Lists the webhooks for a particular form.
+        /// </summary>
+        /// <param name="formsClient">The IFormsClient to use.</param>
+        /// <param name="formId">The ID of the requested form.</param>
+        /// <param name="tenantId">The ID of the requested tenant.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>The result or an error.</returns>
         public static async Task<Result<ICollection<Webhook>>> ListWebhooksResultAsync(this IFormsClient formsClient, Guid formId, Guid tenantId, CancellationToken cancellationToken = default)
         {
             if (formsClient is null)
@@ -349,6 +443,16 @@ namespace VendorHub.Forms
             }
         }
 
+        /// <summary>
+        /// Submits a new form to VendorHub.
+        /// </summary>
+        /// <param name="formsClient">The IFormsClient to use.</param>
+        /// <param name="formId">The ID of the requested form.</param>
+        /// <param name="fields">The text fields to submit.</param>
+        /// <param name="attachments">The files to attach.</param>
+        /// <param name="tenantId">The ID of the requested tenant.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>The result or an error.</returns>
         public static async Task<Result<FormSubmission>> SubmitFormResultAsync(this IFormsClient formsClient, Guid formId, IEnumerable<KeyValuePair<string, string>> fields, IEnumerable<KeyValuePair<string, HttpFile>> attachments, Guid tenantId, CancellationToken cancellationToken = default)
         {
             if (formsClient is null)

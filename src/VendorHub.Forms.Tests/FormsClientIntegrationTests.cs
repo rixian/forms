@@ -35,11 +35,13 @@ public class FormsClientIntegrationTests
 
         serviceCollection.AddFormsClient(new FormsClientOptions
         {
+            FormsApiUri = new Uri(ApiEndpoint),
             TokenClientOptions = new TokenClientOptions
             {
                 ClientId = ClientId,
                 ClientSecret = ClientSecret,
                 Scope = Scope,
+                Authority = Authority,
             },
         });
         ServiceProvider services = serviceCollection.BuildServiceProvider();
@@ -62,8 +64,8 @@ public class FormsClientIntegrationTests
         ICollection<FormDefinition> forms = await this.client.ListFormsAsync(tenantId).ConfigureAwait(false);
         FormDefinition form = forms.First();
 
-        ICollection<FormSubmission> submissions = await this.client.ListSubmissionsAsync(tenantId, form.FormId).ConfigureAwait(false);
-        FormSubmission submissionInfo = submissions.FirstOrDefault(s => s.Attachments.Count > 0);
+        ICollection<FormSubmissionSummary> submissions = await this.client.ListSubmissionsAsync(tenantId, form.FormId).ConfigureAwait(false);
+        FormSubmissionSummary submissionInfo = submissions.FirstOrDefault(s => s.AttachmentCount > 0);
         FormSubmission submission = await this.client.GetSubmissionAsync(tenantId, form.FormId, submissionInfo.SubmissionId).ConfigureAwait(false);
     }
 
