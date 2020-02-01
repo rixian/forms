@@ -26,6 +26,12 @@ namespace VendorHub.Forms
         public string Name { get; set; }
 
         /// <summary>
+        /// Gets or sets the form creation date.
+        /// </summary>
+        [JsonProperty("createdOn")]
+        public DateTimeOffset CreatedOn { get; set; }
+
+        /// <summary>
         /// Gets or sets the form fields.
         /// </summary>
         [JsonProperty("fields")]
