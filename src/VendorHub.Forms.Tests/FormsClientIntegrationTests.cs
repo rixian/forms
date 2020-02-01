@@ -19,7 +19,7 @@ public class FormsClientIntegrationTests
 {
     private const string ClientId = "REPLACE_ME";
     private const string ClientSecret = "REPLACE_ME";
-    private const string Authority = "http://localhost:5000/";
+    private const string Authority = "http://localhost:32773/";
     private const string Scope = "vendorhub.forms";
     private const string ApiEndpoint = "https://api.vendorhub.io";
     private const string TenantId = "REPLACE_ME";
