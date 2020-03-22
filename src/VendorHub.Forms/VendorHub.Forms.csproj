@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)' == 'ProjRef'">
-    <ProjectReference Include="..\..\..\..\rixian\extensions-http\src\Rixian.Extensions.Http.Client\Rixian.Extensions.Http.Client.csproj" />
+    <ProjectReference Include="..\..\..\extensions-http\src\Rixian.Extensions.Http.Client\Rixian.Extensions.Http.Client.csproj" />
   </ItemGroup>
 
   <ItemGroup>
