@@ -5,7 +5,6 @@
     <CodeAnalysisRuleSet>..\shipping.ruleset</CodeAnalysisRuleSet>
     <Description>Client library for the VendorHub Forms service.</Description>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <Configurations>Debug;Release;ProjRef</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,11 +13,11 @@
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(Configuration)' != 'ProjRef'">
+  <ItemGroup Condition="'$(Configuration)' != 'Debug'">
     <PackageReference Include="Rixian.Extensions.Http.Client" Version="0.5.6" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(Configuration)' == 'ProjRef'">
+  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
     <ProjectReference Include="..\..\..\extensions-http\src\Rixian.Extensions.Http.Client\Rixian.Extensions.Http.Client.csproj" />
   </ItemGroup>
 
