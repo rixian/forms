@@ -31,7 +31,7 @@ namespace VendorHub.Forms
 
             Result<FormDefinition> result = await formsClient.CreateFormResultAsync(request, tenantId, cancellationToken).ConfigureAwait(false);
 
-            if (result.IsResult)
+            if (result.IsSuccess)
             {
                 return result.Value;
             }
@@ -57,7 +57,7 @@ namespace VendorHub.Forms
 
             Result<Webhook> result = await formsClient.CreateWebhookResultAsync(formId, request, tenantId, cancellationToken).ConfigureAwait(false);
 
-            if (result.IsResult)
+            if (result.IsSuccess)
             {
                 return result.Value;
             }
@@ -83,7 +83,7 @@ namespace VendorHub.Forms
 
             Result result = await formsClient.DeleteWebhookResultAsync(formId, webhookId, tenantId, cancellationToken).ConfigureAwait(false);
 
-            if (result.IsError)
+            if (result.IsFail)
             {
                 throw ApiException.Create(result.Error);
             }
@@ -105,7 +105,7 @@ namespace VendorHub.Forms
 
             Result<IReadOnlyDictionary<DateTimeOffset, int>> result = await formsClient.GetAllFormStatisticsResultAsync(tenantId, cancellationToken).ConfigureAwait(false);
 
-            if (result.IsResult)
+            if (result.IsSuccess)
             {
                 return result.Value;
             }
@@ -130,7 +130,7 @@ namespace VendorHub.Forms
 
             Result<FormDefinition> result = await formsClient.GetFormResultAsync(formId, tenantId, cancellationToken).ConfigureAwait(false);
 
-            if (result.IsResult)
+            if (result.IsSuccess)
             {
                 return result.Value;
             }
@@ -155,7 +155,7 @@ namespace VendorHub.Forms
 
             Result<IReadOnlyDictionary<DateTimeOffset, int>> result = await formsClient.GetFormStatisticsResultAsync(formId, tenantId, cancellationToken).ConfigureAwait(false);
 
-            if (result.IsResult)
+            if (result.IsSuccess)
             {
                 return result.Value;
             }
@@ -182,7 +182,7 @@ namespace VendorHub.Forms
 
             Result<HttpFile> result = await formsClient.GetSubmissionAttachmentResultAsync(formId, submissionId, attachmentName, tenantId, cancellationToken).ConfigureAwait(false);
 
-            if (result.IsResult)
+            if (result.IsSuccess)
             {
                 return result.Value;
             }
@@ -208,7 +208,7 @@ namespace VendorHub.Forms
 
             Result<FormSubmission> result = await formsClient.GetSubmissionResultAsync(formId, submissionId, tenantId, cancellationToken).ConfigureAwait(false);
 
-            if (result.IsResult)
+            if (result.IsSuccess)
             {
                 return result.Value;
             }
@@ -232,7 +232,7 @@ namespace VendorHub.Forms
 
             Result<ICollection<FormDefinition>> result = await formsClient.ListFormsResultAsync(tenantId, cancellationToken).ConfigureAwait(false);
 
-            if (result.IsResult)
+            if (result.IsSuccess)
             {
                 return result.Value;
             }
@@ -257,7 +257,7 @@ namespace VendorHub.Forms
 
             Result<ICollection<FormSubmissionSummary>> result = await formsClient.ListSubmissionsResultAsync(formId, tenantId, cancellationToken).ConfigureAwait(false);
 
-            if (result.IsResult)
+            if (result.IsSuccess)
             {
                 return result.Value;
             }
@@ -282,7 +282,7 @@ namespace VendorHub.Forms
 
             Result<ICollection<Webhook>> result = await formsClient.ListWebhooksResultAsync(formId, tenantId, cancellationToken).ConfigureAwait(false);
 
-            if (result.IsResult)
+            if (result.IsSuccess)
             {
                 return result.Value;
             }
@@ -309,7 +309,7 @@ namespace VendorHub.Forms
 
             Result<FormSubmission> result = await formsClient.SubmitFormResultAsync(formId, fields, attachments, tenantId, cancellationToken).ConfigureAwait(false);
 
-            if (result.IsResult)
+            if (result.IsSuccess)
             {
                 return result.Value;
             }

@@ -46,11 +46,14 @@ namespace VendorHub.Forms
                     case HttpStatusCode.InternalServerError:
                         {
                             ErrorResponse errorResponse = await response.DeserializeJsonContentAsync<ErrorResponse>().ConfigureAwait(false);
-                            return errorResponse.Error;
+                            return errorResponse.Error.ToResult<FormDefinition>();
                         }
 
                     default:
-                        return await UnexpectedStatusCodeError.CreateAsync(response, $"{nameof(IFormsClient)}.{nameof(CreateFormResultAsync)}").ConfigureAwait(false);
+                        {
+                            UnexpectedStatusCodeError error = await UnexpectedStatusCodeError.CreateAsync(response, $"{nameof(IFormsClient)}.{nameof(CreateFormResultAsync)}").ConfigureAwait(false);
+                            return error.ToResult<FormDefinition>();
+                        }
                 }
             }
         }
@@ -85,11 +88,14 @@ namespace VendorHub.Forms
                     case HttpStatusCode.InternalServerError:
                         {
                             ErrorResponse errorResponse = await response.DeserializeJsonContentAsync<ErrorResponse>().ConfigureAwait(false);
-                            return errorResponse.Error;
+                            return errorResponse.Error.ToResult<Webhook>();
                         }
 
                     default:
-                        return await UnexpectedStatusCodeError.CreateAsync(response, $"{nameof(IFormsClient)}.{nameof(CreateFormResultAsync)}").ConfigureAwait(false);
+                        {
+                            UnexpectedStatusCodeError error = await UnexpectedStatusCodeError.CreateAsync(response, $"{nameof(IFormsClient)}.{nameof(CreateFormResultAsync)}").ConfigureAwait(false);
+                            return error.ToResult<Webhook>();
+                        }
                 }
             }
         }
@@ -124,11 +130,14 @@ namespace VendorHub.Forms
                     case HttpStatusCode.InternalServerError:
                         {
                             ErrorResponse errorResponse = await response.DeserializeJsonContentAsync<ErrorResponse>().ConfigureAwait(false);
-                            return errorResponse.Error;
+                            return errorResponse.Error.ToResult();
                         }
 
                     default:
-                        return await UnexpectedStatusCodeError.CreateAsync(response, $"{nameof(IFormsClient)}.{nameof(CreateFormResultAsync)}").ConfigureAwait(false);
+                        {
+                            UnexpectedStatusCodeError error = await UnexpectedStatusCodeError.CreateAsync(response, $"{nameof(IFormsClient)}.{nameof(CreateFormResultAsync)}").ConfigureAwait(false);
+                            return error.ToResult();
+                        }
                 }
             }
         }
@@ -161,11 +170,14 @@ namespace VendorHub.Forms
                     case HttpStatusCode.InternalServerError:
                         {
                             ErrorResponse errorResponse = await response.DeserializeJsonContentAsync<ErrorResponse>().ConfigureAwait(false);
-                            return errorResponse.Error;
+                            return errorResponse.Error.ToResult<IReadOnlyDictionary<DateTimeOffset, int>>();
                         }
 
                     default:
-                        return await UnexpectedStatusCodeError.CreateAsync(response, $"{nameof(IFormsClient)}.{nameof(CreateFormResultAsync)}").ConfigureAwait(false);
+                        {
+                            UnexpectedStatusCodeError error = await UnexpectedStatusCodeError.CreateAsync(response, $"{nameof(IFormsClient)}.{nameof(CreateFormResultAsync)}").ConfigureAwait(false);
+                            return error.ToResult<IReadOnlyDictionary<DateTimeOffset, int>>();
+                        }
                 }
             }
         }
@@ -199,11 +211,14 @@ namespace VendorHub.Forms
                     case HttpStatusCode.InternalServerError:
                         {
                             ErrorResponse errorResponse = await response.DeserializeJsonContentAsync<ErrorResponse>().ConfigureAwait(false);
-                            return errorResponse.Error;
+                            return errorResponse.Error.ToResult<FormDefinition>();
                         }
 
                     default:
-                        return await UnexpectedStatusCodeError.CreateAsync(response, $"{nameof(IFormsClient)}.{nameof(CreateFormResultAsync)}").ConfigureAwait(false);
+                        {
+                            UnexpectedStatusCodeError error = await UnexpectedStatusCodeError.CreateAsync(response, $"{nameof(IFormsClient)}.{nameof(CreateFormResultAsync)}").ConfigureAwait(false);
+                            return error.ToResult<FormDefinition>();
+                        }
                 }
             }
         }
@@ -237,11 +252,14 @@ namespace VendorHub.Forms
                     case HttpStatusCode.InternalServerError:
                         {
                             ErrorResponse errorResponse = await response.DeserializeJsonContentAsync<ErrorResponse>().ConfigureAwait(false);
-                            return errorResponse.Error;
+                            return errorResponse.Error.ToResult<IReadOnlyDictionary<DateTimeOffset, int>>();
                         }
 
                     default:
-                        return await UnexpectedStatusCodeError.CreateAsync(response, $"{nameof(IFormsClient)}.{nameof(CreateFormResultAsync)}").ConfigureAwait(false);
+                        {
+                            UnexpectedStatusCodeError error = await UnexpectedStatusCodeError.CreateAsync(response, $"{nameof(IFormsClient)}.{nameof(CreateFormResultAsync)}").ConfigureAwait(false);
+                            return error.ToResult<IReadOnlyDictionary<DateTimeOffset, int>>();
+                        }
                 }
             }
         }
@@ -282,11 +300,14 @@ namespace VendorHub.Forms
                     case HttpStatusCode.InternalServerError:
                         {
                             ErrorResponse errorResponse = await response.DeserializeJsonContentAsync<ErrorResponse>().ConfigureAwait(false);
-                            return errorResponse.Error;
+                            return errorResponse.Error.ToResult<HttpFile>();
                         }
 
                     default:
-                        return await UnexpectedStatusCodeError.CreateAsync(response, $"{nameof(IFormsClient)}.{nameof(CreateFormResultAsync)}").ConfigureAwait(false);
+                        {
+                            UnexpectedStatusCodeError error = await UnexpectedStatusCodeError.CreateAsync(response, $"{nameof(IFormsClient)}.{nameof(CreateFormResultAsync)}").ConfigureAwait(false);
+                            return error.ToResult<HttpFile>();
+                        }
                 }
             }
         }
@@ -321,11 +342,14 @@ namespace VendorHub.Forms
                     case HttpStatusCode.InternalServerError:
                         {
                             ErrorResponse errorResponse = await response.DeserializeJsonContentAsync<ErrorResponse>().ConfigureAwait(false);
-                            return errorResponse.Error;
+                            return errorResponse.Error.ToResult<FormSubmission>();
                         }
 
                     default:
-                        return await UnexpectedStatusCodeError.CreateAsync(response, $"{nameof(IFormsClient)}.{nameof(CreateFormResultAsync)}").ConfigureAwait(false);
+                        {
+                            UnexpectedStatusCodeError error = await UnexpectedStatusCodeError.CreateAsync(response, $"{nameof(IFormsClient)}.{nameof(CreateFormResultAsync)}").ConfigureAwait(false);
+                            return error.ToResult<FormSubmission>();
+                        }
                 }
             }
         }
@@ -358,11 +382,14 @@ namespace VendorHub.Forms
                     case HttpStatusCode.InternalServerError:
                         {
                             ErrorResponse errorResponse = await response.DeserializeJsonContentAsync<ErrorResponse>().ConfigureAwait(false);
-                            return errorResponse.Error;
+                            return errorResponse.Error.ToResult<ICollection<FormDefinition>>();
                         }
 
                     default:
-                        return await UnexpectedStatusCodeError.CreateAsync(response, $"{nameof(IFormsClient)}.{nameof(CreateFormResultAsync)}").ConfigureAwait(false);
+                        {
+                            UnexpectedStatusCodeError error = await UnexpectedStatusCodeError.CreateAsync(response, $"{nameof(IFormsClient)}.{nameof(CreateFormResultAsync)}").ConfigureAwait(false);
+                            return error.ToResult<ICollection<FormDefinition>>();
+                        }
                 }
             }
         }
@@ -396,11 +423,14 @@ namespace VendorHub.Forms
                     case HttpStatusCode.InternalServerError:
                         {
                             ErrorResponse errorResponse = await response.DeserializeJsonContentAsync<ErrorResponse>().ConfigureAwait(false);
-                            return errorResponse.Error;
+                            return errorResponse.Error.ToResult<ICollection<FormSubmissionSummary>>();
                         }
 
                     default:
-                        return await UnexpectedStatusCodeError.CreateAsync(response, $"{nameof(IFormsClient)}.{nameof(CreateFormResultAsync)}").ConfigureAwait(false);
+                        {
+                            UnexpectedStatusCodeError error = await UnexpectedStatusCodeError.CreateAsync(response, $"{nameof(IFormsClient)}.{nameof(CreateFormResultAsync)}").ConfigureAwait(false);
+                            return error.ToResult<ICollection<FormSubmissionSummary>>();
+                        }
                 }
             }
         }
@@ -434,11 +464,14 @@ namespace VendorHub.Forms
                     case HttpStatusCode.InternalServerError:
                         {
                             ErrorResponse errorResponse = await response.DeserializeJsonContentAsync<ErrorResponse>().ConfigureAwait(false);
-                            return errorResponse.Error;
+                            return errorResponse.Error.ToResult<ICollection<Webhook>>();
                         }
 
                     default:
-                        return await UnexpectedStatusCodeError.CreateAsync(response, $"{nameof(IFormsClient)}.{nameof(CreateFormResultAsync)}").ConfigureAwait(false);
+                        {
+                            UnexpectedStatusCodeError error = await UnexpectedStatusCodeError.CreateAsync(response, $"{nameof(IFormsClient)}.{nameof(CreateFormResultAsync)}").ConfigureAwait(false);
+                            return error.ToResult<ICollection<Webhook>>();
+                        }
                 }
             }
         }
@@ -474,11 +507,14 @@ namespace VendorHub.Forms
                     case HttpStatusCode.InternalServerError:
                         {
                             ErrorResponse errorResponse = await response.DeserializeJsonContentAsync<ErrorResponse>().ConfigureAwait(false);
-                            return errorResponse.Error;
+                            return errorResponse.Error.ToResult<FormSubmission>();
                         }
 
                     default:
-                        return await UnexpectedStatusCodeError.CreateAsync(response, $"{nameof(IFormsClient)}.{nameof(CreateFormResultAsync)}").ConfigureAwait(false);
+                        {
+                            UnexpectedStatusCodeError error = await UnexpectedStatusCodeError.CreateAsync(response, $"{nameof(IFormsClient)}.{nameof(CreateFormResultAsync)}").ConfigureAwait(false);
+                            return error.ToResult<FormSubmission>();
+                        }
                 }
             }
         }

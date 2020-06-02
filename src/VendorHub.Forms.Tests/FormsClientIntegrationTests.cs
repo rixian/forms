@@ -36,7 +36,7 @@ public class FormsClientIntegrationTests
         serviceCollection.AddFormsClient(new FormsClientOptions
         {
             FormsApiUri = new Uri(ApiEndpoint),
-            TokenClientOptions = new TokenClientOptions
+            TokenClientOptions = new ClientCredentialsTokenClientOptions
             {
                 ClientId = ClientId,
                 ClientSecret = ClientSecret,

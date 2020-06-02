@@ -12,7 +12,7 @@ namespace VendorHub.Forms
     /// <summary>
     /// Standard error for unexpected status codes returned from an HTTP request.
     /// </summary>
-    public class UnexpectedStatusCodeError : ErrorBase
+    public class UnexpectedStatusCodeError : Error
     {
         private UnexpectedStatusCodeError()
         {
