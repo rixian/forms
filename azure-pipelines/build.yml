@@ -16,7 +16,7 @@ jobs:
 
 - job: Linux
   pool:
-    vmImage: Ubuntu 16.04
+    vmImage: ubuntu-latest
   steps:
   - checkout: self
     clean: true # "all" doesn't work, but "true" does, despite YAML docs
@@ -25,7 +25,7 @@ jobs:
 
 - job: macOS
   pool:
-    vmImage: macOS 10.13
+    vmImage: macOS-latest
   steps:
   - template: install-dependencies.yml
   - template: dotnet.yml
@@ -36,7 +36,7 @@ jobs:
   - Linux
   - macOS
   pool:
-    vmImage: Ubuntu 16.04
+    vmImage: ubuntu-latest
   condition: succeededOrFailed()
   steps:
   - checkout: self

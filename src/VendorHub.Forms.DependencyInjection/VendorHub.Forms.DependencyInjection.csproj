@@ -8,14 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.0" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(Configuration)' != 'Debug'">
-    <PackageReference Include="Rixian.Extensions.Tokens" Version="0.4.10" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
-    <ProjectReference Include="..\..\..\extensions-tokens\src\Rixian.Extensions.Tokens\Rixian.Extensions.Tokens.csproj" />
+    <PackageReference Include="Rixian.Extensions.Tokens" Version="0.5.11" />
   </ItemGroup>
 
   <ItemGroup>
