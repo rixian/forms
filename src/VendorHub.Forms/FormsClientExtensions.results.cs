@@ -283,32 +283,29 @@ namespace VendorHub.Forms
 
             HttpResponseMessage response = await formsClient.GetSubmissionAttachmentHttpResponseAsync(formId, submissionId, attachmentName, tenantId, cancellationToken).ConfigureAwait(false);
 
-            using (response)
+            switch (response.StatusCode)
             {
-                switch (response.StatusCode)
-                {
-                    case HttpStatusCode.OK:
-                        return new HttpFile
-                        {
-                            Data = await response.Content.ReadAsStreamAsync().ConfigureAwait(false),
-                            ContentType = response.Content?.Headers?.ContentType?.MediaType,
-                            FileName = response.Content?.Headers?.ContentDisposition?.FileName,
-                        };
-                    case HttpStatusCode.NoContent:
-                        return default;
-                    case HttpStatusCode.BadRequest:
-                    case HttpStatusCode.InternalServerError:
-                        {
-                            ErrorResponse errorResponse = await response.DeserializeJsonContentAsync<ErrorResponse>().ConfigureAwait(false);
-                            return errorResponse.Error.ToResult<HttpFile>();
-                        }
+                case HttpStatusCode.OK:
+                    return new HttpFile(response)
+                    {
+                        Data = await response.Content.ReadAsStreamAsync().ConfigureAwait(false),
+                        ContentType = response.Content?.Headers?.ContentType?.MediaType,
+                        FileName = response.Content?.Headers?.ContentDisposition?.FileNameStar ?? response.Content?.Headers?.ContentDisposition?.FileName,
+                    };
+                case HttpStatusCode.NoContent:
+                    return default;
+                case HttpStatusCode.BadRequest:
+                case HttpStatusCode.InternalServerError:
+                    {
+                        ErrorResponse errorResponse = await response.DeserializeJsonContentAsync<ErrorResponse>().ConfigureAwait(false);
+                        return errorResponse.Error.ToResult<HttpFile>();
+                    }
 
-                    default:
-                        {
-                            UnexpectedStatusCodeError error = await UnexpectedStatusCodeError.CreateAsync(response, $"{nameof(IFormsClient)}.{nameof(CreateFormResultAsync)}").ConfigureAwait(false);
-                            return error.ToResult<HttpFile>();
-                        }
-                }
+                default:
+                    {
+                        UnexpectedStatusCodeError error = await UnexpectedStatusCodeError.CreateAsync(response, $"{nameof(IFormsClient)}.{nameof(CreateFormResultAsync)}").ConfigureAwait(false);
+                        return error.ToResult<HttpFile>();
+                    }
             }
         }
 
